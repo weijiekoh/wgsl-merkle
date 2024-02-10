@@ -72,7 +72,7 @@ async function merkle() {
     // Note: this will have modulo bias
     let rand = BigInt('0x' + crypto.randomBytes(32).toString('hex')) % p
     leaves.push(rand)
-    leaves_mont.push(rand * r % p)
+    leaves_mont.push((rand * r) % p)
   }
 
   let start = Date.now()
@@ -154,6 +154,7 @@ async function invoke_shader(
     'read-only-storage',
     'read-only-storage',
     'storage',
+    'uniform',
   ])
 
   const bindGroup = create_bind_group(device, bindGroupLayout, [
@@ -161,6 +162,7 @@ async function invoke_shader(
     constants_c_sb,
     constants_m_sb,
     output_sb,
+    n_ub,
   ])
 
   const computePipeline = await create_compute_pipeline(
