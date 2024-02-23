@@ -61,6 +61,8 @@ async function merkle() {
 
   const num_inputs = 2 ** 10
 
+  assert(num_inputs <= 256 * 256)
+
   let leaves: BigInt[] = []
   let leaves_mont: BigInt[] = []
 
@@ -148,12 +150,21 @@ async function invoke_shader(
   n_ub: GPUBufer,
   output_sb: GPUBufer
 ) {
+  // Calcualate the necessary number of X and Y workgroups
+  const num_threads = n / 2
+  const num_x_workgroups = 2 ** Math.ceil(Math.log2(num_threads) / 2)
+  const num_y_workgroups = Math.ceil(num_threads / num_x_workgroups)
+
+  // Let the shader access num_y_workgroups via a uniform buffer
+  const num_y_workgroups_bytes = new Uint8Array(bigint_to_limbs(BigInt(num_y_workgroups)).buffer)
+  const num_y_workgroups_ub = create_and_write_ub(device, num_y_workgroups_bytes)
 
   const bindGroupLayout = create_bind_group_layout(device, [
     'read-only-storage',
     'read-only-storage',
     'read-only-storage',
     'storage',
+    'uniform',
     'uniform',
   ])
 
@@ -163,6 +174,7 @@ async function invoke_shader(
     constants_m_sb,
     output_sb,
     n_ub,
+    num_y_workgroups_ub,
   ])
 
   const computePipeline = await create_compute_pipeline(
@@ -176,7 +188,8 @@ async function invoke_shader(
     commandEncoder,
     computePipeline,
     bindGroup,
-    n / 2,
+    num_x_workgroups,
+    num_y_workgroups,
   )
 
   const size = (n / 2) * 16 * 4

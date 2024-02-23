@@ -8,3 +8,5 @@ var<storage, read> constants_m: array<BigInt256>;
 var<storage, read_write> output: array<BigInt256>;
 @group(0) @binding(4)
 var<uniform> n: u32;
+@group(0) @binding(5)
+var<uniform> num_y_workgroups: u32;
