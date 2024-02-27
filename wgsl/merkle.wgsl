@@ -3,8 +3,9 @@
 fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     let id = global_id.x * num_y_workgroups + global_id.y;
 
-    var a: BigInt256 = leaves[id * 2u];
-    var b: BigInt256 = leaves[id * 2u + 1u];
+    // TODO for the d/Infra workshop: fill in the blanks.
+    var a: BigInt256 = ???;
+    var b: BigInt256 = ???;
 
-    output[id] = hash_2(a, b);
+    output[id] = ???;
 }
