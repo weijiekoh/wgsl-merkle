@@ -26,7 +26,14 @@ The structure of the Poseidon WGSL code was inspired by
 
 ## Getting started
 
-The following was tested with Chrome 115.
+The following was tested with Chrome 115. Install it with:
+
+```bash
+npx @puppeteer/browsers install chrome@115
+```
+
+You may now run Chrome 115 from your home directory. Please browse to
+`chrome://flags/` and enable "Unsafe WebGPU Support".
 
 Clone this repository, navigate to the project directory, and run:
 
